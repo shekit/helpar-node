@@ -37,11 +37,13 @@ $(document).ready(function(){
 	})
 
 	$("#makeCall").on('click', function(){
+		socket.emit('calling', 'helpme')
 		var outgoingCall = peer.call('helper', window.localStream);
 		window.currentCall = outgoingCall;
 		outgoingCall.on('stream', function(remoteStream){
 			window.remoteStream = remoteStream
 		})
+
 	})
 
 	$("#endCall").on('click', function(){

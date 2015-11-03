@@ -1,4 +1,7 @@
 $(document).ready(function(){
+
+	var socket= io();
+
 	var peer = new Peer('helper',{
 		key: 's2b0v17d1s8aor',
 		debug: 3,
@@ -11,6 +14,10 @@ $(document).ready(function(){
 	peer.on('open', function(id){
 		console.log('My id is: ' + id)
 		$("#myId").text(id)
+	})
+
+	socket.on('help', function(msg){
+		console.log(msg);
 	})
 
 	peer.on('call', function(incomingCall){

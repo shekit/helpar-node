@@ -64,6 +64,17 @@ app.use(function(err, req, res, next) {
 
 io.on('connection', function(socket){
   console.log('a user connected');
+
+  socket.on('calling', function(msg){
+    console.log("Received from helpee:" + msg)
+    socket.broadcast.emit('help',msg)
+  });
+
+  socket.on('disconnect', function(){
+    console.log('a user disconnected')
+  });
+
+
 })
 
 
