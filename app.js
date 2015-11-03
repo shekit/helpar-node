@@ -70,6 +70,11 @@ io.on('connection', function(socket){
     socket.broadcast.emit('help',msg)
   });
 
+  socket.on('resolution', function(msg){
+    console.log("Resolution: ", msg);
+    socket.broadcast.emit('resolution', msg)
+  })
+
   socket.on('answered', function(msg){
     console.log("Helper answered the call")
     if(msg == 'yes'){

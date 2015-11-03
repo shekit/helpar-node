@@ -3,6 +3,14 @@ $(document).ready(function(){
 	socket = io();
 	socket.emit('helpeeOnline', 'yes')
 
+
+	var resolution = {
+		width: 0,
+		height: 0
+	}
+
+	console.log(resolution);
+
 	var peer = new Peer('helpee', {
 		key: 's2b0v17d1s8aor',
 		debug: 3,
@@ -34,12 +42,16 @@ $(document).ready(function(){
 		var video = $("#localVideo");
 		video.attr({'src': URL.createObjectURL(stream)})
 		window.localStream = stream;
+		resolution.width = video.innerWidth();
+		resolution.height = video.innerHeight();
 	}, function(error){
 		console.log(error)
 	})
 
 	$("#makeCall").on('click', function(){
 		socket.emit('calling', 'helpme');
+		socket.emit('resolution', resolution);
+
 		$(".calling").css({'display':'block'})
 
 		var outgoingCall = peer.call('helper', window.localStream);

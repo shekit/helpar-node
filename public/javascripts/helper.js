@@ -12,6 +12,8 @@ $(document).ready(function(){
 		]}
 	});
 
+	var canvas = $("canvas");
+
 	peer.on('open', function(id){
 		console.log('My id is: ' + id)
 		$("#myId").text(id)
@@ -29,6 +31,12 @@ $(document).ready(function(){
 		if(msg == 'yes'){
 			$(".helpeeOnline").css({'display':'block'});
 		}
+	})
+
+	socket.on('resolution', function(msg){
+		canvas.height(msg.height);
+		canvas.width(msg.width);
+		console.log("RECEIVED RESOLUTION")
 	})
 
 	$("#decline").on('click', function(event){
