@@ -2,4 +2,16 @@ extends layout
 
 block content
   h1= title
+  h2(id='myId')
   p Welcome to #{title}
+  p
+    a(href="#", id="grabVideo") Grab Video
+  p  
+    a(href="#", id="endVideo") End Video
+  div(id='videoContainer')
+    video(id="remoteVideo", class="remoteVideo", autoplay)
+    video(id="localVideo", muted="true", class="localVideo", autoplay, width='320', height='240')
+  p
+    input(type='text', placeholder='call user id', id="remotePeerId")
+    a(href="#", id="makeCall") Call
+    a(href="#", id="endCall") End Call
