@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+video {
+	-webkit-transform: rotateY(-180deg);
+	tranform: rotateY(-180deg);
+}

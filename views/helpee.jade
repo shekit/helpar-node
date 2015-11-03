@@ -2,3 +2,8 @@ extends layout
 
 block content
   p Helpee
+  video(id='localVideo', autoplay, muted='true')
+  audio(id='remoteAudio',autoplay)
+  a(href='#',id="makeCall") Call
+  a(href='#', id="endCall") End Call
+  script(src='/javascripts/helpee.js')
