@@ -24,10 +24,16 @@ $(document).ready(function(){
 		}
 	})
 
+	$("#decline").on('click', function(event){
+		event.preventDefault();
+		socket.emit('endFromHelper', 'yes')
+	})
+
 	peer.on('call', function(incomingCall){
 		window.currentHelperCall = incomingCall;
 		$("#answer").on('click', function(){
 			incomingCall.answer(window.helperStream)
+			socket.emit('answered','yes')
 		})
 		
 		incomingCall.on('stream', function(remoteStream){

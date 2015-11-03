@@ -11,3 +11,7 @@ video {
 	-webkit-transform: rotateY(-180deg);
 	tranform: rotateY(-180deg);
 }
+
+.calling {
+	display: none;
+}

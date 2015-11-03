@@ -70,6 +70,20 @@ io.on('connection', function(socket){
     socket.broadcast.emit('help',msg)
   });
 
+  socket.on('answered', function(msg){
+    console.log("Helper answered the call")
+    if(msg == 'yes'){
+      socket.broadcast.emit('answered', 'yes')
+    }
+  })
+
+  socket.on('endFromHelper', function(msg){
+    console.log('Helper said to end the call');
+    if(msg == 'yes'){
+      socket.broadcast.emit('endFromHelper', 'yes')
+    }
+  })
+
   socket.on('disconnect', function(){
     console.log('a user disconnected')
   });

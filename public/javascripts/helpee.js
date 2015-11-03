@@ -16,6 +16,7 @@ $(document).ready(function(){
 		$("#myId").text(id)
 	})
 
+
 	peer.on('call', function(incomingCall){
 		window.currentCall = incomingCall;
 		incomingCall.answer(window.localStream);
@@ -37,7 +38,9 @@ $(document).ready(function(){
 	})
 
 	$("#makeCall").on('click', function(){
-		socket.emit('calling', 'helpme')
+		socket.emit('calling', 'helpme');
+		$(".calling").css({'display':'block'})
+
 		var outgoingCall = peer.call('helper', window.localStream);
 		window.currentCall = outgoingCall;
 		outgoingCall.on('stream', function(remoteStream){
@@ -46,8 +49,27 @@ $(document).ready(function(){
 
 	})
 
+	socket.on('answered', function(msg){
+		if(msg == 'yes'){
+			$(".calling").text('Connecting...')
+			setTimeout(function(){
+				$(".calling").css({'display':'none'})
+				$(".calling").text('Calling...')
+			}, 500)
+		}
+	})
+
+	socket.on('endFromHelper', function(msg){
+		if(msg=='yes'){
+			console.log('end call')
+			window.currentCall.close();
+		}
+	})
+
 	$("#endCall").on('click', function(){
 		window.currentCall.close();
 	})
+
+
 
 })
