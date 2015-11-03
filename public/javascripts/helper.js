@@ -12,7 +12,8 @@ $(document).ready(function(){
 		]}
 	});
 
-	var canvas = $("canvas");
+	var canvas = document.getElementById('helperCanvas');
+	var context = canvas.getContext('2d');
 
 	peer.on('open', function(id){
 		console.log('My id is: ' + id)
@@ -34,8 +35,8 @@ $(document).ready(function(){
 	})
 
 	socket.on('resolution', function(msg){
-		canvas.height(msg.height);
-		canvas.width(msg.width);
+		context.canvas.height = msg.height;
+		context.canvas.width = msg.width;
 		console.log("RECEIVED RESOLUTION")
 	})
 
