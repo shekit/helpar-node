@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	var socket= io();
+	socket= io();
 	var answer = false;
 	$(".calling").css({'display':'none'});
 	var peer = new Peer('helper',{

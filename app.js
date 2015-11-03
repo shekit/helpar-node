@@ -91,6 +91,16 @@ io.on('connection', function(socket){
     }
   })
 
+  socket.on('startDrawing', function(msg){
+    console.log('new path');
+    socket.broadcast.emit('startDrawing', 'yes');
+  })
+
+  socket.on('drawPoint', function(msg){
+    console.log(msg)
+    socket.broadcast.emit('drawPoint', msg)
+  })
+
   socket.on('disconnect', function(){
     console.log('a user disconnected')
   });
