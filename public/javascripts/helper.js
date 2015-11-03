@@ -14,9 +14,10 @@ $(document).ready(function(){
 	})
 
 	peer.on('call', function(incomingCall){
-		window.currentCall = incomingCall;
+		window.currentHelperCall = incomingCall;
+		incomingCall.answer(window.helperStream)
 		incomingCall.on('stream', function(remoteStream){
-			window.remoteStream = remoteStream;
+			window.helperRemoteStream = remoteStream;
 			var video = $("#remoteVideo");
 			video.attr({'src':URL.createObjectURL(remoteStream)});
 		})
@@ -25,8 +26,8 @@ $(document).ready(function(){
 	navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
 	navigator.getUserMedia({audio:true, video:false}, function(stream){
-			console.log("capturing your audio")
-			window.localStream = stream;
+			console.log(stream)
+			window.helperStream = stream;
 		}, function(error){
 			console.log(error);
 		})
