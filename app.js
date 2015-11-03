@@ -1,4 +1,5 @@
 var express = require('express');
+var socket_io = require("socket.io")
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -8,7 +9,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var socket_io = require("socket.io")
+
 
 var app = express();
 
@@ -60,6 +61,10 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+})
 
 
 module.exports = app;
