@@ -1,7 +1,8 @@
 $(document).ready(function(){
 
 	var socket= io();
-
+	var answer = false;
+	$(".calling").css({'display':'none'});
 	var peer = new Peer('helper',{
 		key: 's2b0v17d1s8aor',
 		debug: 3,
@@ -18,11 +19,17 @@ $(document).ready(function(){
 
 	socket.on('help', function(msg){
 		console.log(msg);
+		if(msg == 'helpme'){
+			$(".calling").css({'display':'block'});
+		}
 	})
 
 	peer.on('call', function(incomingCall){
 		window.currentHelperCall = incomingCall;
-		incomingCall.answer(window.helperStream)
+		$("#answer").on('click', function(){
+			incomingCall.answer(window.helperStream)
+		})
+		
 		incomingCall.on('stream', function(remoteStream){
 			window.helperRemoteStream = remoteStream;
 			var video = $("#remoteVideo");
