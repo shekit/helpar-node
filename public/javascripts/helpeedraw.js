@@ -2,8 +2,13 @@ var myPath;
 
 socket.on('startDrawing', function(msg){
 	if(msg == 'yes'){
+		if(myPath){
+			myPath.remove();
+		}
+		
 		myPath = new Path();
 		myPath.strokeColor = 'red';
+		myPath.strokeWidth = '5';
 		console.log('start path')
 	}
 })

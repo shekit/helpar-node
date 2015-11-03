@@ -1,9 +1,16 @@
 var myPath;
 
+
+
 function onMouseDown(event){
 	socket.emit('startDrawing','yes');
+	if(myPath){
+		myPath.remove();
+	}
+	
 	myPath = new Path();
 	myPath.strokeColor = 'red';
+	myPath.strokeWidth = '5';
 }
 
 function onMouseDrag(event){
