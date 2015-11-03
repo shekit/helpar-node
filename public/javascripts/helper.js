@@ -24,6 +24,13 @@ $(document).ready(function(){
 		}
 	})
 
+	socket.on('helpeeOnline', function(msg){
+		console.log('helpee is here');
+		if(msg == 'yes'){
+			$(".helpeeOnline").css({'display':'block'});
+		}
+	})
+
 	$("#decline").on('click', function(event){
 		event.preventDefault();
 		socket.emit('endFromHelper', 'yes')

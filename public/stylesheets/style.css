@@ -15,3 +15,7 @@ video {
 .calling {
 	display: none;
 }
+
+.helpeeOnline {
+	display: none;
+}

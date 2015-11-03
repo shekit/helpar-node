@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
 	var socket = io();
+	socket.emit('helpeeOnline', 'yes')
 
 	var peer = new Peer('helpee', {
 		key: 's2b0v17d1s8aor',

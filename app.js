@@ -84,6 +84,13 @@ io.on('connection', function(socket){
     }
   })
 
+  socket.on('helpeeOnline', function(msg){
+    console.log('Helpee is online');
+    if(msg == 'yes'){
+      socket.broadcast.emit('helpeeOnline','yes')
+    }
+  })
+
   socket.on('disconnect', function(){
     console.log('a user disconnected')
   });
