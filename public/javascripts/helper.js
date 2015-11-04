@@ -49,7 +49,8 @@ $(document).ready(function(){
 
 	$("#clearCanvas").on('click', function(event){
 		event.preventDefault();
-		context.clearRect(0,0,canvas.width, canvas.height)
+		context.clearRect(0,0,canvas.width, canvas.height);
+		socket.emit('clearCanvas', 'yes');
 	})
 
 	peer.on('call', function(incomingCall){

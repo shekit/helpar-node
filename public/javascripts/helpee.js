@@ -9,7 +9,8 @@ $(document).ready(function(){
 		height: 0
 	}
 
-	console.log(resolution);
+	var canvas = document.getElementById('helpeeCanvas');
+	var context = canvas.getContext('2d');
 
 	var peer = new Peer('helpee', {
 		key: 's2b0v17d1s8aor',
@@ -77,6 +78,10 @@ $(document).ready(function(){
 			console.log('end call')
 			window.currentCall.close();
 		}
+	})
+
+	socket.on('clearCanvas', function(msg){
+		context.clearRect(0,0,canvas.width, canvas.height);
 	})
 
 	$("#endCall").on('click', function(){

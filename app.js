@@ -106,6 +106,11 @@ io.on('connection', function(socket){
     socket.broadcast.emit('drawPoint', msg)
   })
 
+  socket.on('clearCanvas', function(msg){
+    console.log("clear Canvas");
+    socket.broadcast.emit('clearCanvas', 'yes');
+  })
+
   socket.on('disconnect', function(){
     console.log('a user disconnected')
   });
