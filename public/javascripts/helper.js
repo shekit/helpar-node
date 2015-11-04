@@ -35,6 +35,8 @@ $(document).ready(function(){
 	})
 
 	socket.on('resolution', function(msg){
+
+		//$("#helperCanvas").width(msg.width).height(msg.height)
 		context.canvas.height = msg.height;
 		context.canvas.width = msg.width;
 		console.log("RECEIVED RESOLUTION")
@@ -43,6 +45,11 @@ $(document).ready(function(){
 	$("#decline").on('click', function(event){
 		event.preventDefault();
 		socket.emit('endFromHelper', 'yes')
+	})
+
+	$("#clearCanvas").on('click', function(event){
+		event.preventDefault();
+		context.clearRect(0,0,canvas.width, canvas.height)
 	})
 
 	peer.on('call', function(incomingCall){
