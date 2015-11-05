@@ -8,8 +8,10 @@ block content
     canvas(id="helpeeCanvas", class="canvas canvas1")
   audio(id='remoteAudio',autoplay)
   div(class='controls')
-    a(href='#', id="makeCall") Call
-    a(href='#', id="endCall") End Call
+    a(href='#', id="makeCall")
+      img(src='/images/answer.png', width='100', alt='Call')
+    a(href='#', id="endCall")
+      img(src='/images/decline.png', width='100', alt='End Call')
   script(src="/socket.io/socket.io.js")
   script(src='/javascripts/helpee.js')
   script(type="text/paperscript", src='/javascripts/helpeedraw.js',canvas="helpeeCanvas")

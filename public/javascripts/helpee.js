@@ -28,13 +28,17 @@ $(document).ready(function(){
 
 
 	peer.on('call', function(incomingCall){
-		window.currentCall = incomingCall;
-		incomingCall.answer(window.localStream);
-		incomingCall.on('stream', function(remoteStream){
-			window.remoteStream = remoteStream;
-			var audio = $("#remoteAudio");
-			audio.attr({'src':URL.createObjectURL(remoteStream)});
-		})
+		//window.currentCall = incomingCall;
+		//incomingCall.answer(window.localStream);
+		// incomingCall.on('stream', function(remoteStream){
+		// 	window.remoteStream = remoteStream;
+		// 	var audio = $("#remoteAudio");
+		// 	audio.attr({'src':URL.createObjectURL(remoteStream)});
+		// 	// show end call button
+		// 	$("#makeCall").fadeOut();
+		// 	$("#endCall").fadeIn()
+		// 	console.log("RECEIVINGGGG")
+		// })
 	})
 
 	navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
@@ -43,8 +47,11 @@ $(document).ready(function(){
 		var video = $("#localVideo");
 		video.attr({'src': URL.createObjectURL(stream)})
 		window.localStream = stream;
+		//set resolution to communicate via socket to receiver so that their video and canvas matches helpees size
 		resolution.width = video.innerWidth();
 		resolution.height = video.innerHeight();
+		// show call button
+		$("#makeCall").fadeIn();
 	}, function(error){
 		console.log(error)
 	})
@@ -59,6 +66,12 @@ $(document).ready(function(){
 		window.currentCall = outgoingCall;
 		outgoingCall.on('stream', function(remoteStream){
 			window.remoteStream = remoteStream
+			var audio = $("#remoteAudio");
+			audio.attr({'src':URL.createObjectURL(remoteStream)});
+			// show end call button
+			$("#makeCall").fadeOut();
+			$("#endCall").fadeIn()
+			console.log("RECEIVINGGGG");
 		})
 
 	})
@@ -86,6 +99,9 @@ $(document).ready(function(){
 
 	$("#endCall").on('click', function(){
 		window.currentCall.close();
+		$("#endCall").fadeOut('100')
+		$("#makeCall").fadeIn();
+		
 	})
 
 

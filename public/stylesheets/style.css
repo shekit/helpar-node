@@ -11,6 +11,11 @@ video {
 	-webkit-transform: rotateY(-180deg);
 	tranform: rotateY(-180deg);
 }
+.wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
 
 .calling {
 	z-index: 5;
@@ -19,18 +24,26 @@ video {
 	width: 100%;
 	color: #fff;
 	text-shadow: 0 2px #333;
-	/*display: none;*/
+	display: none;
+}
+
+.controls {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	bottom: 10px;
+}
+
+#makeCall, #endCall {
+	padding: 0 15px;
+	display: none;
 }
 
 .helpeeOnline {
 	display: none;
 }
 
-.wrapper {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
+
 
 .video {
 	position: absolute;
