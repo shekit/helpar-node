@@ -1,8 +1,8 @@
 $(document).ready(function(){
-
+	canDraw = false;
 	socket= io();
 	var answer = false;
-	$(".calling").css({'display':'none'});
+	$(".getCall").css({'display':'none'});
 	var peer = new Peer('helper',{
 		key: 's2b0v17d1s8aor',
 		debug: 3,
@@ -23,14 +23,15 @@ $(document).ready(function(){
 	socket.on('help', function(msg){
 		console.log(msg);
 		if(msg == 'helpme'){
-			$(".calling").css({'display':'block'});
+			$(".getCall").css({'display':'block'});
 		}
 	})
 
+	// when helpee comes online
 	socket.on('helpeeOnline', function(msg){
 		console.log('helpee is here');
 		if(msg == 'yes'){
-			$(".helpeeOnline").css({'display':'block'});
+			$(".helpeeOnline").text('Helpee is online');
 		}
 	})
 
@@ -39,12 +40,16 @@ $(document).ready(function(){
 		//$("#helperCanvas").width(msg.width).height(msg.height)
 		context.canvas.height = msg.height;
 		context.canvas.width = msg.width;
-		console.log("RECEIVED RESOLUTION")
+		console.log("RECEIVED RESOLUTION: ",msg.width, msg.height);
+		var video = $("video")
+		video.innerHeight(msg.height);
+		video.innerWidth(msg.width);
 	})
 
 	$("#decline").on('click', function(event){
 		event.preventDefault();
-		socket.emit('endFromHelper', 'yes')
+		socket.emit('endFromHelper', 'yes');
+		$(".helpeeOnline").text('Helpee is online');
 	})
 
 	$("#clearCanvas").on('click', function(event){
@@ -56,14 +61,17 @@ $(document).ready(function(){
 	peer.on('call', function(incomingCall){
 		window.currentHelperCall = incomingCall;
 		$("#answer").on('click', function(){
-			incomingCall.answer(window.helperStream)
-			socket.emit('answered','yes')
+			incomingCall.answer(window.helperStream);
+			socket.emit('answered','yes');
+			canDraw = true;
 		})
 		
 		incomingCall.on('stream', function(remoteStream){
 			window.helperRemoteStream = remoteStream;
 			var video = $("#remoteVideo");
 			video.attr({'src':URL.createObjectURL(remoteStream)});
+
+			console.log("VIDEO RES: ", video.innerWidth(), video.innerHeight())
 		})
 	})
 

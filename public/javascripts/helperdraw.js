@@ -1,24 +1,28 @@
 var myPath;
 
-
-
 function onMouseDown(event){
-	socket.emit('startDrawing','yes');
-	if(myPath){
-		myPath.remove();
+	if(canDraw){
+		socket.emit('startDrawing','yes');
+		if(myPath){
+			myPath.remove();
+		}
+		
+		myPath = new Path();
+		myPath.strokeColor = 'red';
+		myPath.strokeWidth = '5';
+	} else {
+		return;
 	}
-	
-	myPath = new Path();
-	myPath.strokeColor = 'red';
-	myPath.strokeWidth = '5';
 }
 
 function onMouseDrag(event){
-	myPath.add(event.point)
-	var x = event.point.x;
-	var y = event.point.y;
-	
-	emitPoint(x,y)
+	if(canDraw){
+		myPath.add(event.point)
+		var x = event.point.x;
+		var y = event.point.y;
+		
+		emitPoint(x,y)
+	}
 }
 
 function onMouseUp(event){

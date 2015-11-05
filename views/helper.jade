@@ -1,14 +1,13 @@
 extends layout
 
 block content
-  p Helper
-  p(class='helpeeOnline') Helpee is online
-  p(class="calling") Helpee is calling...
-    a(href="#", id="answer") answer
+  p(class='helpeeOnline') No one is online
+  p(class="getCall") Helpee is calling...
+    a(href="#", id="answer") Answer
     a(href="#", id='decline') Decline
   a(href="#", id='clearCanvas') Clear Canvas
   div(class='wrapper')
-    video(id='remoteVideo',class="video",autoplay)
+    video(id='remoteVideo',class="video-helper",autoplay)
     canvas(id="helperCanvas", class="canvas")
   script(src="socket.io/socket.io.js")
   script(src='/javascripts/helper.js')
