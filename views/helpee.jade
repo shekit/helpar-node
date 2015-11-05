@@ -1,14 +1,15 @@
 extends layout
 
 block content
-  p Helpee
-  h2(class='calling') Calling...
+  
   div(class="wrapper")
+    h2(class='calling') Calling...
     video(id='localVideo', class="video",autoplay, muted='true')
     canvas(id="helpeeCanvas", class="canvas canvas1")
   audio(id='remoteAudio',autoplay)
-  a(href='#',id="makeCall") Call
-  a(href='#', id="endCall") End Call
+  div(class='controls')
+    a(href='#', id="makeCall") Call
+    a(href='#', id="endCall") End Call
   script(src="/socket.io/socket.io.js")
   script(src='/javascripts/helpee.js')
   script(type="text/paperscript", src='/javascripts/helpeedraw.js',canvas="helpeeCanvas")

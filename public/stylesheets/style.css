@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -13,7 +13,13 @@ video {
 }
 
 .calling {
-	display: none;
+	z-index: 5;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	color: #fff;
+	text-shadow: 0 2px #333;
+	/*display: none;*/
 }
 
 .helpeeOnline {
