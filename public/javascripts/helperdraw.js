@@ -1,12 +1,15 @@
 var myPath;
 
+var canvas = document.getElementById('helperCanvas');
+var context = canvas.getContext('2d');
+
 function onMouseDown(event){
 	if(canDraw){
 		socket.emit('startDrawing','yes');
 		if(myPath){
 			myPath.remove();
 		}
-		
+		context.clearRect(0,0,canvas.width, canvas.height);
 		myPath = new Path();
 		myPath.strokeColor = 'red';
 		myPath.strokeWidth = '5';

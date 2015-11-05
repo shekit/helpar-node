@@ -72,6 +72,9 @@ $(document).ready(function(){
 		var canvas = $("canvas")
 		canvas.innerHeight(self.innerHeight());
 		canvas.innerWidth(self.innerWidth());
+
+		context.canvas.height = self.innerHeight();
+		context.canvas.width = self.innerWidth();
 	})
 
 	//call helper
