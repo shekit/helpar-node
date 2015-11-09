@@ -5,6 +5,9 @@ $(document).ready(function(){
 	$(".getCall").css({'display':'none'});
 	var peer = new Peer('helper',{
 		key: 's2b0v17d1s8aor',
+		host: '104.131.82.13',
+		port: 9000,
+		path: '/',
 		debug: 3,
 		config: {'iceServers':[
 			{url: 'stun:stun.1.google.com:19302'},

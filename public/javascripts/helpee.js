@@ -15,8 +15,11 @@ $(document).ready(function(){
 	var context = canvas.getContext('2d');
 
 	// peer js config
-	var peer = new Peer('helpee', {
+	var peer = new Peer('helper',{
 		key: 's2b0v17d1s8aor',
+		host: '104.131.82.13',
+		port: 9000,
+		path: '/',
 		debug: 3,
 		config: {'iceServers':[
 			{url: 'stun:stun.1.google.com:19302'},
