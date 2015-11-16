@@ -85,13 +85,29 @@ $(document).ready(function(){
 		})
 	})
 
-	navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+	// get audio feed
+	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
+   		getUserMedia: function(c) {
+     		return new Promise(function(y, n) {
+       			(navigator.mozGetUserMedia ||
+        		navigator.webkitGetUserMedia).call(navigator, c, y, n);
+     		});
+   		}
+	} : null);
 
-	navigator.getUserMedia({audio:true, video:false}, function(stream){
-			console.log(stream)
-			window.helperStream = stream;
-		}, function(error){
-			console.log(error);
-		})
+	if (!navigator.mediaDevices) {
+	  console.log("getUserMedia() not supported.");
+	  return;
+	}
+
+	var constraints = {audio:true, video:false}
+
+	navigator.mediaDevices.getUserMedia(constraints)
+	.then(function(stream){
+		window.helperStream = stream
+	})
+	.catch(function(err){
+		console.log(err.name + ": "+err.message)
+	})
 
 })

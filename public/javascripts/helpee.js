@@ -52,21 +52,7 @@ $(document).ready(function(){
 	// 		console.log("RECEIVINGGGG")
 	// 	})
 	// })
-	
-	// grab camera feed
-	// navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
-	// navigator.getUserMedia({audio:true, video:true}, function(stream){
-	// 	var video = $("#localVideo");
-	// 	video.attr({'src': URL.createObjectURL(stream)})
-	// 	window.localStream = stream;
-	// 	//set resolution to communicate via socket to receiver so that their video and canvas matches helpees size
-	// 	console.log("Resolution: ");
-	// 	console.log(resolution)
-		
-	// }, function(error){
-	// 	console.log(error)
-	// })
 	
 	// get camera feed
 	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
