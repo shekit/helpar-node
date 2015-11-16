@@ -67,7 +67,7 @@ io.on('connection', function(socket){
 
   socket.on('calling', function(msg){
     console.log("Received from helpee:" + msg)
-    socket.broadcast.emit('help',msg)
+    socket.broadcast.emit('calling',msg)
   });
 
   socket.on('resolution', function(msg){

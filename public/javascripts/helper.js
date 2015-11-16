@@ -35,9 +35,9 @@ $(document).ready(function(){
 		$("#myId").text(id)
 	})
 
-	socket.on('help', function(msg){
+	socket.on('calling', function(msg){
 		console.log(msg);
-		if(msg == 'helpme'){
+		if(msg == 'yes'){
 			$(".getCall").css({'display':'block'});
 		}
 	})

@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
 	socket = io();
-
+	console.log('HELPEE CONNECTED')
 	//tell helper when you are online
 	socket.emit('helpeeOnline', 'yes')
 
@@ -61,8 +61,9 @@ $(document).ready(function(){
 		video.src = window.URL.createObjectURL(stream);
 		window.helpeeStream = stream;
 		video.onloadedmetadata=function(event){
+			console.log("GOT VIDEO")
+			
 			video.play();
-
 			// show call button
 		 	$("#makeCall").fadeIn();
 
@@ -78,16 +79,18 @@ $(document).ready(function(){
 
 			context.canvas.height = resolution.height;
 			context.canvas.width = resolution.width;
+			console.log("SET CANVAS TO VIDEO SIZE")
 		}
 	})
 	.catch(function(err){
+		console.log("ERROR IN GETTING VIDEO")
 		console.log(err.name + ": " + err.message)
 	})
 
 	//call helper
 	$("#makeCall").on('click', function(event){
 		event.preventDefault();
-		socket.emit('calling', 'helpme');
+		socket.emit('calling', 'yes');
 		//communicate resolution
 		socket.emit('resolution', resolution);
 		$(".calling").css({'display':'block'})
