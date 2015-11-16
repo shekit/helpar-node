@@ -1,6 +1,12 @@
 $(document).ready(function(){
+
+	// can only draw if helpee is connected
 	canDraw = false;
 	socket= io();
+
+	//if helpee connects before helper, let them know helper is online
+	socket.emit('helperOnline','yes')
+
 	var answer = false;
 	$(".getCall").css({'display':'none'});
 	var peer = new Peer('helper',{

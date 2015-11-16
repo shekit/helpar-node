@@ -5,6 +5,12 @@ $(document).ready(function(){
 	//tell helper when you are online
 	socket.emit('helpeeOnline', 'yes')
 
+	// when helper comes online after helpee has joined
+	socket.on('helperOnline',function(msg){
+		socket.emit('helpeeOnline','yes')
+		console.log("HELP IS HERE")
+	})
+
 	// resolution object to transmit to helper so their video and canvas size matches up
 	var resolution = {
 		width: 0,

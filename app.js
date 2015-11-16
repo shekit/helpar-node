@@ -96,6 +96,13 @@ io.on('connection', function(socket){
     }
   })
 
+  socket.on('helperOnline', function(msg){
+    console.log('Helper is online');
+    if(msg == 'yes'){
+      socket.broadcast.emit('helperOnline','yes')
+    }
+  })
+
   socket.on('startDrawing', function(msg){
     console.log('new path');
     socket.broadcast.emit('startDrawing', 'yes');
