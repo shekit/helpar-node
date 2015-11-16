@@ -10,10 +10,10 @@ $(document).ready(function(){
 	var answer = false;
 	$(".getCall").css({'display':'none'});
 	var peer = new Peer('helper',{
-		key: 's2b0v17d1s8aor',
-		host: '104.131.82.13',
-		port: 9000,
-		path: '/',
+		key: '3dqzrq8u2aitfbt9',
+		// host: '104.131.82.13',
+		// port: 9000,
+		// path: '/',
 		debug: 3,
 		config: {'iceServers':[
 			{url: 'stun:stun.1.google.com:19302'},
@@ -59,6 +59,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		socket.emit('endFromHelper', 'yes');
 		$(".helpeeOnline").text('Helpee is online');
+		$("video").hide()
 	})
 
 	$("#clearCanvas").on('click', function(event){

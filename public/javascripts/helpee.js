@@ -21,11 +21,11 @@ $(document).ready(function(){
 	var context = canvas.getContext('2d');
 
 	// peer js config
-	var peer = new Peer('helper',{
-		key: 's2b0v17d1s8aor',
-		host: '104.131.82.13',
-		port: 9000,
-		path: '/',
+	var peer = new Peer('helpee',{
+		key: '3dqzrq8u2aitfbt9',
+		// host: '104.131.82.13',
+		// port: 9000,
+		//path: '/',
 		debug: 3,
 		config: {'iceServers':[
 			{url: 'stun:stun.1.google.com:19302'},
@@ -54,36 +54,64 @@ $(document).ready(function(){
 	// })
 	
 	// grab camera feed
-	navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+	// navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
-	navigator.getUserMedia({audio:true, video:true}, function(stream){
-		var video = $("#localVideo");
-		video.attr({'src': URL.createObjectURL(stream)})
-		window.localStream = stream;
-		//set resolution to communicate via socket to receiver so that their video and canvas matches helpees size
-		console.log("Resolution: ");
-		console.log(resolution)
+	// navigator.getUserMedia({audio:true, video:true}, function(stream){
+	// 	var video = $("#localVideo");
+	// 	video.attr({'src': URL.createObjectURL(stream)})
+	// 	window.localStream = stream;
+	// 	//set resolution to communicate via socket to receiver so that their video and canvas matches helpees size
+	// 	console.log("Resolution: ");
+	// 	console.log(resolution)
 		
-	}, function(error){
-		console.log(error)
+	// }, function(error){
+	// 	console.log(error)
+	// })
+	
+	// get camera feed
+	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
+   		getUserMedia: function(c) {
+     		return new Promise(function(y, n) {
+       			(navigator.mozGetUserMedia ||
+        		navigator.webkitGetUserMedia).call(navigator, c, y, n);
+     		});
+   		}
+	} : null);
+
+	if (!navigator.mediaDevices) {
+	  console.log("getUserMedia() not supported.");
+	  return;
+	}
+
+	var constraints = {audio:true, video:true}
+
+	navigator.mediaDevices.getUserMedia(constraints)
+	.then(function(stream){
+		var video = document.querySelector('video');
+		video.src = window.URL.createObjectURL(stream);
+		window.localStream = stream;
+		video.onloadedmetadata=function(event){
+			video.play();
+
+			// show call button
+		 	$("#makeCall").fadeIn();
+
+			//set resolution to communicate via socket to receiver so that their video and canvas matches helpees size
+			resolution.width = video.getBoundingClientRect().width 
+			resolution.height = video.getBoundingClientRect().height
+			console.log(resolution)
+
+			//set canvas to match size of video
+			var canvas = $("canvas")
+			canvas.innerHeight(resolution.height);
+			canvas.innerWidth(resolution.width);
+
+			context.canvas.height = resolution.height;
+			context.canvas.width = resolution.width;
+		}
 	})
-
-	//once video is loaded
-	$("#localVideo").on('loadedmetadata', function(){
-		console.log("LOADED DATA")
-		var self = $(this)
-		// show call button
-		$("#makeCall").fadeIn();
-		resolution.width = self.innerWidth();
-		resolution.height = self.innerHeight();
-		console.log(resolution);
-
-		var canvas = $("canvas")
-		canvas.innerHeight(self.innerHeight());
-		canvas.innerWidth(self.innerWidth());
-
-		context.canvas.height = self.innerHeight();
-		context.canvas.width = self.innerWidth();
+	.catch(function(err){
+		console.log(err.name + ": " + err.message)
 	})
 
 	//call helper
@@ -119,25 +147,32 @@ $(document).ready(function(){
 		}
 	})
 
-	// if helper ends the call
-	socket.on('endFromHelper', function(msg){
-		if(msg=='yes'){
-			console.log('end call')
-			window.currentCall.close();
-		}
-	})
-
-	// clear helpess canvas when helper clears his
+	// clear helpee canvas when helper clears his
 	socket.on('clearCanvas', function(msg){
 		context.clearRect(0,0,canvas.width, canvas.height);
 	})
 
-	// end call to helper
+	// end call initiated by HELPER
+	socket.on('endFromHelper', function(msg){
+		if(msg=='yes'){
+			endCall();
+		}
+	})
+
+	// end call initiated by HELPEE
 	$("#endCall").on('click', function(event){
 		event.preventDefault();
+		endCall()
+	})
+
+	// end call
+	function endCall(){
+		console.log("END CALL")
 		window.currentCall.close();
 		$("#endCall").fadeOut('100')
 		$("#makeCall").fadeIn();
-	})
+		//clear any drawn elements
+		context.clearRect(0,0,canvas.width, canvas.height);
+	}
 
 })
