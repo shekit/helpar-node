@@ -37,22 +37,6 @@ $(document).ready(function(){
 	peer.on('open', function(id){
 		console.log('My id is: ' + id)
 	})
-
-
-	// peer.on('call', function(incomingCall){
-	// 	window.currentCall = incomingCall;
-	// 	incomingCall.answer(window.localStream);
-	// 	incomingCall.on('stream', function(remoteStream){
-	// 		window.remoteStream = remoteStream;
-	// 		var audio = $("#remoteAudio");
-	// 		audio.attr({'src':URL.createObjectURL(remoteStream)});
-	// 		// show end call button
-	// 		$("#makeCall").fadeOut();
-	// 		$("#endCall").fadeIn()
-	// 		console.log("RECEIVINGGGG")
-	// 	})
-	// })
-
 	
 	// get camera feed
 	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
@@ -75,7 +59,7 @@ $(document).ready(function(){
 	.then(function(stream){
 		var video = document.querySelector('video');
 		video.src = window.URL.createObjectURL(stream);
-		window.localStream = stream;
+		window.helpeeStream = stream;
 		video.onloadedmetadata=function(event){
 			video.play();
 
@@ -108,16 +92,20 @@ $(document).ready(function(){
 		socket.emit('resolution', resolution);
 		$(".calling").css({'display':'block'})
 
-		var outgoingCall = peer.call('helper', window.localStream);
+		//call helper providing helpee stream from getusermedia
+		var outgoingCall = peer.call('helper', window.helpeeStream);
+		//set to variable so we can access it to close it later
 		window.currentCall = outgoingCall;
-		outgoingCall.on('stream', function(remoteStream){
-			window.remoteStream = remoteStream
+
+		// on receiving audio from helper add it to audio element
+		outgoingCall.on('stream', function(remoteHelperStream){
+			window.remoteHelperStream = remoteHelperStream
 			var audio = $("#remoteAudio");
-			audio.attr({'src':URL.createObjectURL(remoteStream)});
+			audio.attr({'src':URL.createObjectURL(remoteHelperStream)});
 			// show end call button
 			$("#makeCall").fadeOut();
 			$("#endCall").fadeIn()
-			console.log("RECEIVINGGGG");
+			console.log("CONNECTED TO HELPER");
 		})
 
 	})

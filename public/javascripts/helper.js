@@ -1,14 +1,22 @@
 $(document).ready(function(){
 
+	socket = io();
+
 	// can only draw if helpee is connected
 	canDraw = false;
-	socket= io();
 
+	var canvas = document.getElementById('helperCanvas');
+	var context = canvas.getContext('2d');
+
+	var answer = false;
+
+	var video = $("video")
+	
 	//if helpee connects before helper, let them know helper is online
 	socket.emit('helperOnline','yes')
 
-	var answer = false;
 	$(".getCall").css({'display':'none'});
+
 	var peer = new Peer('helper',{
 		key: '3dqzrq8u2aitfbt9',
 		// host: '104.131.82.13',
@@ -21,9 +29,7 @@ $(document).ready(function(){
 		]}
 	});
 
-	var canvas = document.getElementById('helperCanvas');
-	var context = canvas.getContext('2d');
-
+	
 	peer.on('open', function(id){
 		console.log('My id is: ' + id)
 		$("#myId").text(id)
@@ -44,13 +50,12 @@ $(document).ready(function(){
 		}
 	})
 
+	// set video and canvas size based on helpee's resolution
 	socket.on('resolution', function(msg){
-
-		//$("#helperCanvas").width(msg.width).height(msg.height)
 		context.canvas.height = msg.height;
 		context.canvas.width = msg.width;
 		console.log("RECEIVED RESOLUTION: ",msg.width, msg.height);
-		var video = $("video")
+
 		video.innerHeight(msg.height);
 		video.innerWidth(msg.width);
 	})
@@ -65,21 +70,21 @@ $(document).ready(function(){
 	$("#clearCanvas").on('click', function(event){
 		event.preventDefault();
 		context.clearRect(0,0,canvas.width, canvas.height);
+		// clear canvas of helpee as well
 		socket.emit('clearCanvas', 'yes');
 	})
 
 	peer.on('call', function(incomingCall){
 		window.currentHelperCall = incomingCall;
 		$("#answer").on('click', function(){
-			incomingCall.answer(window.helperStream);
+			incomingCall.answer(window.helperAudioStream);
 			socket.emit('answered','yes');
 			canDraw = true;
 		})
 		
-		incomingCall.on('stream', function(remoteStream){
-			window.helperRemoteStream = remoteStream;
-			var video = $("#remoteVideo");
-			video.attr({'src':URL.createObjectURL(remoteStream)});
+		incomingCall.on('stream', function(remoteHelpeeStream){
+			window.remoteHelpeeStream = remoteHelpeeStream;
+			video.attr({'src':URL.createObjectURL(remoteHelpeeStream)});
 
 			console.log("VIDEO RES: ", video.innerWidth(), video.innerHeight())
 		})
@@ -100,11 +105,12 @@ $(document).ready(function(){
 	  return;
 	}
 
+	//only grab audio as helper doesnt need to see himself
 	var constraints = {audio:true, video:false}
 
 	navigator.mediaDevices.getUserMedia(constraints)
 	.then(function(stream){
-		window.helperStream = stream
+		window.helperAudioStream = stream
 	})
 	.catch(function(err){
 		console.log(err.name + ": "+err.message)
