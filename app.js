@@ -173,9 +173,13 @@ io.on('connection', function(socket){
     console.log("ROOMS COUNT: "+rooms.length)
     
   });
-
-
 })
+
+// socket namespace to track active rooms
+var roomio = io.of('/rooms');
+roomio.on('connection', function(socket){
+  console.log("a user room connected")
+});
 
 
 module.exports = app;
