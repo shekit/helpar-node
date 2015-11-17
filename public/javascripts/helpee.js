@@ -45,8 +45,8 @@ $(document).ready(function(){
 	peer.on('open', function(id){
 		helpeeId = id;
 		console.log("Helpee ID: "+helpeeId)
-		console.log("SEND ID TO SERVER")
-		socket.emit("helpeeId",helpeeId)
+		console.log("SEND HELPEE ID TO SERVER")
+		socket.emit("helpeeId",id)
 	})
 	
 	// get camera feed

@@ -13,11 +13,11 @@ $(document).ready(function(){
 	var video = $("video")
 	
 	//if helpee connects before helper, let them know helper is online
-	socket.emit('helperOnline','yes')
+	//socket.emit('helperOnline','yes')
 
 	$(".getCall").css({'display':'none'});
 
-	var peer = new Peer('helper',{
+	var peer = new Peer({
 		key: '3dqzrq8u2aitfbt9',
 		// host: '104.131.82.13',
 		// port: 9000,
@@ -29,10 +29,14 @@ $(document).ready(function(){
 		]}
 	});
 
+	var helperId = null;
 	
 	peer.on('open', function(id){
-		console.log('My id is: ' + id)
-		$("#myId").text(id)
+		helperId = id;
+		console.log("Helper ID: "+helperId)
+		console.log("SEND HELPER DETAILS TO SERVER")
+		//socket.emit("helperId",helperId)
+		socket.emit("helperConnected", {"online":"yes","id":id,"roomId":id})
 	})
 
 	socket.on('calling', function(msg){

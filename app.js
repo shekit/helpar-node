@@ -62,13 +62,42 @@ app.use(function(err, req, res, next) {
   });
 });
 
+var rooms = []
+
 io.on('connection', function(socket){
   console.log('a user connected');
+  console.log("SOCKET ID: "+socket.id)
 
   // receiving helpee id when helpee connects
   socket.on('helpeeId', function(msg){
     console.log("Received Helpee ID")
     console.log(msg)
+  })
+
+  socket.on('helperId', function(msg){
+    console.log("Received Helper ID: "+msg);
+    console.log("CREATING ROOM FOR HELPER")
+    //create a room with the id of the helper for helpee to join
+    rooms.push(msg)
+    socket.join(msg)
+    console.log(rooms)
+  })
+
+  socket.on("helperConnected", function(msg){
+    console.log("HELPER CONNECTED");
+    
+    //create room object and add to rooms array
+    var roomDetails = {
+       "roomId":msg.roomId,
+       "available":true,
+       "socketId":socket.id
+    }
+    console.log("CREATED ROOM");
+    rooms.push(msg.roomId);
+    
+    // helper joins own room
+    socket.join(msg.roomId);
+    console.log("ROOM ARRAY: "+rooms)
   })
 
   socket.on('calling', function(msg){
@@ -126,6 +155,7 @@ io.on('connection', function(socket){
 
   socket.on('disconnect', function(){
     console.log('a user disconnected')
+    console.log(socket.id)
   });
 
 
