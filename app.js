@@ -64,6 +64,8 @@ app.use(function(err, req, res, next) {
 
 var rooms = []
 
+var helpeeWaitlist = [];
+
 io.on('connection', function(socket){
   console.log('a user connected');
   console.log("SOCKET ID: "+socket.id)
@@ -101,6 +103,7 @@ io.on('connection', function(socket){
     console.log("ROOMS COUNT: "+rooms.length)
   })
 
+  // when helpee connects
   socket.on('helpeeConnected', function(msg){
     console.log("helpee connected")
     var helpeeSocketId = socket.id;
@@ -114,14 +117,20 @@ io.on('connection', function(socket){
         }
       }
     }
+
+    // inform helpee about availability of helpers
     if(helperToConnectTo){
       console.log("got helper")
-      io.to(helpeeSocketId).emit('helperStatus',helperToConnectTo)
+      io.to(helpeeSocketId).emit('helperStatus',{"available":"yes","id":helperToConnectTo})
 
     } else {
       console.log("no helper")
-      io.to(helpeeSocketId).emit('helperStatus','no helper for you yet')
+      // add helpee to wait list
+      helpeeWaitlist.push(helpeeSocketId)
+      io.to(helpeeSocketId).emit('helperStatus',{"available":"no","id":"no helper for you yet"})
     }
+
+    console.log("WAILIST COUNT: "+helpeeWaitlist.length)
   })
 
   socket.on('calling', function(msg){
@@ -191,10 +200,24 @@ io.on('connection', function(socket){
         }
       }
     } catch(err){
+      console.log("ERROR deleting Helper")
+      console.log(err)
+    }
+
+    //delete helpee from waitlist if he was there
+    try{
+      for(var j in helpeeWaitlist){
+        if(helpeeWaitlist[j] == id){
+          helpeeWaitlist.splice(j,1)
+        }
+      }
+    } catch(err){
+      console.log("ERROR deleting Helpee")
       console.log(err)
     }
 
     console.log("ROOMS COUNT: "+rooms.length)
+    console.log("WAILIST COUNT: "+helpeeWaitlist.length)
     
   });
 })

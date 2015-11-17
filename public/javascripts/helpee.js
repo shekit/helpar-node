@@ -28,6 +28,7 @@ $(document).ready(function(){
 	var context = canvas.getContext('2d');
 
 	var helpeeId = null;
+	var helperId = null;
 
 	// peer js config
 	var peer = new Peer({
@@ -52,7 +53,12 @@ $(document).ready(function(){
 	})
 
 	socket.on('helperStatus', function(msg){
-		console.log(msg)
+		if(msg.available == 'yes'){
+			console.log("You have a helper, assign it to peer id and show call button")
+			helperId = msg.id
+		} else {
+			console.log("No helper yet. Wait for someone")
+		}
 	})
 	
 	// get camera feed
@@ -113,7 +119,7 @@ $(document).ready(function(){
 		$(".calling").css({'display':'block'})
 
 		//call helper providing helpee stream from getusermedia
-		var outgoingCall = peer.call('helper', window.helpeeStream);
+		var outgoingCall = peer.call(helperId, window.helpeeStream);
 		//set to variable so we can access it to close it later
 		window.currentCall = outgoingCall;
 
