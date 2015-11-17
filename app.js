@@ -70,6 +70,11 @@ io.on('connection', function(socket){
     socket.broadcast.emit('calling',msg)
   });
 
+  socket.on('helpeeId', function(msg){
+    console.log("Received Helpee ID")
+    console.log(msg)
+  })
+
   socket.on('resolution', function(msg){
     console.log("Resolution: ", msg);
     socket.broadcast.emit('resolution', msg)

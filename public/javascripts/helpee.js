@@ -4,11 +4,17 @@ $(document).ready(function(){
 	console.log('HELPEE CONNECTED')
 	//tell helper when you are online
 	socket.emit('helpeeOnline', 'yes')
+	$("#helperOnline").hide();
 
 	// when helper comes online after helpee has joined
 	socket.on('helperOnline',function(msg){
 		socket.emit('helpeeOnline','yes')
 		console.log("HELP IS HERE")
+		//$("#helperOnline").fadeIn(300);
+		// show button after little delay
+		setTimeout(function(){
+			$("#makeCall").show();
+		},1000)
 	})
 
 	// resolution object to transmit to helper so their video and canvas size matches up
@@ -20,8 +26,10 @@ $(document).ready(function(){
 	var canvas = document.getElementById('helpeeCanvas');
 	var context = canvas.getContext('2d');
 
+	var helpeeId = null;
+
 	// peer js config
-	var peer = new Peer('helpee',{
+	var peer = new Peer({
 		key: '3dqzrq8u2aitfbt9',
 		// host: '104.131.82.13',
 		// port: 9000,
@@ -36,6 +44,9 @@ $(document).ready(function(){
 	// on connecting to peerjs
 	peer.on('open', function(id){
 		console.log('My id is: ' + id)
+		helpeeId = id;
+		console.log("Helpee ID: "+helpeeId)
+		socket.emit("helpeeId",helpeeId)
 	})
 	
 	// get camera feed
