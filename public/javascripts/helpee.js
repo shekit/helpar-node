@@ -3,19 +3,20 @@ $(document).ready(function(){
 	socket = io();
 	console.log('HELPEE CONNECTED')
 	//tell helper when you are online
-	socket.emit('helpeeOnline', 'yes')
+	//socket.emit('helpeeOnline', 'yes')
 	$("#helperOnline").hide();
 
+
 	// when helper comes online after helpee has joined
-	socket.on('helperOnline',function(msg){
-		socket.emit('helpeeOnline','yes')
-		console.log("HELP IS HERE")
-		//$("#helperOnline").fadeIn(300);
-		// show button after little delay
-		setTimeout(function(){
-			$("#makeCall").show();
-		},1000)
-	})
+	// socket.on('helperOnline',function(msg){
+	// 	socket.emit('helpeeOnline','yes')
+	// 	console.log("HELP IS HERE")
+	// 	//$("#helperOnline").fadeIn(300);
+	// 	// show button after little delay
+	// 	setTimeout(function(){
+	// 		$("#makeCall").show();
+	// 	},1000)
+	// })
 
 	// resolution object to transmit to helper so their video and canvas size matches up
 	var resolution = {
@@ -46,7 +47,12 @@ $(document).ready(function(){
 		helpeeId = id;
 		console.log("Helpee ID: "+helpeeId)
 		console.log("SEND HELPEE ID TO SERVER")
-		socket.emit("helpeeId",id)
+		socket.emit('helpeeConnected',{"online":"yes","id":id})
+		//socket.emit("helpeeId",id)
+	})
+
+	socket.on('helperStatus', function(msg){
+		console.log(msg)
 	})
 	
 	// get camera feed

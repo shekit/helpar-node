@@ -83,6 +83,7 @@ io.on('connection', function(socket){
     console.log(rooms)
   })
 
+  // when helper connects
   socket.on("helperConnected", function(msg){
     console.log("HELPER CONNECTED");
     
@@ -98,6 +99,29 @@ io.on('connection', function(socket){
     // helper joins room with same id
     socket.join(msg.roomId);
     console.log("ROOMS COUNT: "+rooms.length)
+  })
+
+  socket.on('helpeeConnected', function(msg){
+    console.log("helpee connected")
+    var helpeeSocketId = socket.id;
+    console.log(helpeeSocketId)
+    var helperToConnectTo = null
+    if(msg.online=='yes'){
+      for(var i in rooms){
+        if(rooms[i].available){
+          helperToConnectTo = rooms[i].roomId
+          break;
+        }
+      }
+    }
+    if(helperToConnectTo){
+      console.log("got helper")
+      io.to(helpeeSocketId).emit('helperStatus',helperToConnectTo)
+
+    } else {
+      console.log("no helper")
+      io.to(helpeeSocketId).emit('helperStatus','no helper for you yet')
+    }
   })
 
   socket.on('calling', function(msg){
