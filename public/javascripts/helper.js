@@ -35,7 +35,6 @@ $(document).ready(function(){
 		helperId = id;
 		console.log("Helper ID: "+helperId)
 		console.log("SEND HELPER DETAILS TO SERVER")
-		//socket.emit("helperId",helperId)
 		socket.emit("helperConnected", {"online":"yes","id":id,"roomId":id})
 	})
 

@@ -92,12 +92,12 @@ io.on('connection', function(socket){
        "available":true,
        "socketId":socket.id
     }
+    rooms.push(roomDetails);
     console.log("CREATED ROOM");
-    rooms.push(msg.roomId);
-    
-    // helper joins own room
+
+    // helper joins room with same id
     socket.join(msg.roomId);
-    console.log("ROOM ARRAY: "+rooms)
+    console.log("ROOMS COUNT: "+rooms.length)
   })
 
   socket.on('calling', function(msg){
@@ -156,6 +156,22 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     console.log('a user disconnected')
     console.log(socket.id)
+    var id = socket.id
+
+    // delete room from array when helper leaves
+    try{
+      for(var i in rooms){
+        // check socket id of helper and delete if matches rooms socket id
+        if(rooms[i].socketId == id){
+          rooms.splice(i,1)
+        }
+      }
+    } catch(err){
+      console.log(err)
+    }
+
+    console.log("ROOMS COUNT: "+rooms.length)
+    
   });
 
 
