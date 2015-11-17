@@ -65,15 +65,16 @@ app.use(function(err, req, res, next) {
 io.on('connection', function(socket){
   console.log('a user connected');
 
-  socket.on('calling', function(msg){
-    console.log("Received from helpee:" + msg)
-    socket.broadcast.emit('calling',msg)
-  });
-
+  // receiving helpee id when helpee connects
   socket.on('helpeeId', function(msg){
     console.log("Received Helpee ID")
     console.log(msg)
   })
+
+  socket.on('calling', function(msg){
+    console.log("Received from helpee:" + msg)
+    socket.broadcast.emit('calling',msg)
+  });
 
   socket.on('resolution', function(msg){
     console.log("Resolution: ", msg);

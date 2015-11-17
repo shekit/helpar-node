@@ -43,9 +43,9 @@ $(document).ready(function(){
 
 	// on connecting to peerjs
 	peer.on('open', function(id){
-		console.log('My id is: ' + id)
 		helpeeId = id;
 		console.log("Helpee ID: "+helpeeId)
+		console.log("SEND ID TO SERVER")
 		socket.emit("helpeeId",helpeeId)
 	})
 	
