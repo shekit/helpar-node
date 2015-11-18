@@ -70,20 +70,6 @@ io.on('connection', function(socket){
   console.log('a user connected');
   console.log("SOCKET ID: "+socket.id)
 
-  // receiving helpee id when helpee connects
-  socket.on('helpeeId', function(msg){
-    console.log("Received Helpee ID")
-    console.log(msg)
-  })
-
-  socket.on('helperId', function(msg){
-    console.log("Received Helper ID: "+msg);
-    console.log("CREATING ROOM FOR HELPER")
-    //create a room with the id of the helper for helpee to join
-    rooms.push(msg)
-    socket.join(msg)
-    console.log(rooms)
-  })
 
   // when helper connects
   socket.on("helperConnected", function(msg){
@@ -93,19 +79,23 @@ io.on('connection', function(socket){
     var roomDetails = {
        "roomId":msg.roomId,
        "available":true,
-       "socketId":socket.id
+       "socketId":socket.id,
+       "members":1
     }
     rooms.push(roomDetails);
     console.log("CREATED ROOM");
 
-    // helper joins room with same id
+    // helper creates and joins room with same id
     socket.join(msg.roomId);
     console.log("ROOMS COUNT: "+rooms.length)
+
+    console.log("NOTIFY ROOMS")
+    roomio.emit('rooms',rooms)
   })
 
   // when helpee connects
   socket.on('helpeeConnected', function(msg){
-    console.log("helpee connected")
+    console.log("HELPEE CONNECTED")
     var helpeeSocketId = socket.id;
     console.log(helpeeSocketId)
     var helperToConnectTo = null
@@ -113,6 +103,7 @@ io.on('connection', function(socket){
       for(var i in rooms){
         if(rooms[i].available){
           helperToConnectTo = rooms[i].roomId
+          rooms[i].available = false;
           break;
         }
       }
@@ -120,7 +111,7 @@ io.on('connection', function(socket){
 
     // inform helpee about availability of helpers
     if(helperToConnectTo){
-      console.log("got helper")
+      console.log("HELPER IS AVAILABLE")
       io.to(helpeeSocketId).emit('helperStatus',{"available":"yes","id":helperToConnectTo})
 
     } else {
@@ -131,6 +122,16 @@ io.on('connection', function(socket){
     }
 
     console.log("WAILIST COUNT: "+helpeeWaitlist.length)
+  })
+
+  // helpee joins the helpers room
+  socket.on('joinRoom', function(msg){
+    console.log("HELPEE JOINED ROOM")
+    var roomIndex = findRoom(msg, "roomId")
+    socket.join(msg)
+    rooms[roomIndex].available = false;
+    console.log("ROOM IS NOW FULL")
+    roomio.emit('rooms',rooms)
   })
 
   socket.on('calling', function(msg){
@@ -189,19 +190,14 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     console.log('a user disconnected')
     console.log(socket.id)
-    var id = socket.id
+    var roomId = findRoom(socket.id, "socketId")
 
     // delete room from array when helper leaves
-    try{
-      for(var i in rooms){
-        // check socket id of helper and delete if matches rooms socket id
-        if(rooms[i].socketId == id){
-          rooms.splice(i,1)
-        }
-      }
-    } catch(err){
-      console.log("ERROR deleting Helper")
-      console.log(err)
+    if(roomId){
+      rooms.splice(roomId,1)
+      roomio.emit('rooms',rooms)
+    } else {
+      roomio.emit('noHelpers','yes')
     }
 
     //delete helpee from waitlist if he was there
@@ -209,6 +205,7 @@ io.on('connection', function(socket){
       for(var j in helpeeWaitlist){
         if(helpeeWaitlist[j] == id){
           helpeeWaitlist.splice(j,1)
+          break;
         }
       }
     } catch(err){
@@ -221,6 +218,22 @@ io.on('connection', function(socket){
     
   });
 })
+
+// find index of room
+function findRoom(id,param){
+  try{
+    for(var i in rooms){
+      // check socket id or roomid of helper and return index
+      if(rooms[i][param] == id){
+        return i
+      }
+    }
+  } catch(err){
+    console.log("ERROR deleting Helper")
+    console.log(err)
+  }
+  return null
+}
 
 // socket namespace to track active rooms
 var roomio = io.of('/rooms');

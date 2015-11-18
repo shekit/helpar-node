@@ -28,6 +28,7 @@ $(document).ready(function(){
 	var context = canvas.getContext('2d');
 
 	var helpeeId = null;
+
 	var helperId = null;
 
 	// peer js config
@@ -56,6 +57,7 @@ $(document).ready(function(){
 		if(msg.available == 'yes'){
 			console.log("You have a helper, assign it to peer id and show call button")
 			helperId = msg.id
+			socket.emit('joinRoom',helperId)
 		} else {
 			console.log("No helper yet. Wait for someone")
 		}
@@ -111,7 +113,7 @@ $(document).ready(function(){
 	})
 
 	//call helper
-	$("#makeCall").on('click', function(event){
+	$("body").on('click',"#makeCall", function(event){
 		event.preventDefault();
 		socket.emit('calling', 'yes');
 		//communicate resolution
