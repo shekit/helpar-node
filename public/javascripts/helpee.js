@@ -62,6 +62,10 @@ $(document).ready(function(){
 			console.log("No helper yet. Wait for someone")
 		}
 	})
+
+	socket.on('helperLeft', function(msg){
+		console.log("YOU Have been ABANDONED!")
+	})
 	
 	// get camera feed
 	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {

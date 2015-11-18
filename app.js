@@ -80,8 +80,10 @@ io.on('connection', function(socket){
        "roomId":msg.roomId,
        "available":true,
        "socketId":socket.id,
+       "helpeeSocketId":'',
        "members":1
     }
+
     rooms.push(roomDetails);
     console.log("CREATED ROOM");
 
@@ -130,6 +132,7 @@ io.on('connection', function(socket){
     var roomIndex = findRoom(msg, "roomId")
     socket.join(msg)
     rooms[roomIndex].available = false;
+    rooms[roomIndex].helpeeSocketId = socket.id
     console.log("ROOM IS NOW FULL")
     roomio.emit('rooms',rooms)
   })
@@ -191,13 +194,29 @@ io.on('connection', function(socket){
     console.log('a user disconnected')
     console.log(socket.id)
     var roomId = findRoom(socket.id, "socketId")
+    
 
     // delete room from array when helper leaves
+    
+
     if(roomId){
+      if(rooms[roomId].helpeeSocketId){
+        io.to(rooms[roomId].helpeeSocketId).emit("helperLeft","yes");
+      }
       rooms.splice(roomId,1)
       roomio.emit('rooms',rooms)
     } else {
       roomio.emit('noHelpers','yes')
+    }
+
+    // if helpee leaves call with helper, mark room as available
+    var roomWhereHelpeeLeft = findRoom(socket.id, "helpeeSocketId");
+
+    if(roomWhereHelpeeLeft){
+      console.log("HELPEE LEFT CHAT FIRST")
+      rooms[roomWhereHelpeeLeft].available = true;
+      rooms[roomWhereHelpeeLeft].helpeeSocketId = '';
+      roomio.emit('rooms', rooms)
     }
 
     //delete helpee from waitlist if he was there
