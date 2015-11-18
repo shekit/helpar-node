@@ -65,6 +65,7 @@ $(document).ready(function(){
 
 	socket.on('helperLeft', function(msg){
 		console.log("YOU Have been ABANDONED!")
+		//endCall();
 	})
 	
 	// get camera feed

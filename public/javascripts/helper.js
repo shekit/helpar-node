@@ -53,6 +53,15 @@ $(document).ready(function(){
 		}
 	})
 
+	socket.on('helpeeStatus', function(msg){
+		if(msg=='joined'){
+			console.log("HELPEE IS HERE")
+		} else if(msg=='left'){
+			console.log("HELPEE LEFT CHAT")
+		}
+		
+	})
+
 	// set video and canvas size based on helpee's resolution
 	socket.on('resolution', function(msg){
 		context.canvas.height = msg.height;

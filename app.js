@@ -134,6 +134,7 @@ io.on('connection', function(socket){
     rooms[roomIndex].available = false;
     rooms[roomIndex].helpeeSocketId = socket.id
     console.log("ROOM IS NOW FULL")
+    socket.broadcast.to(msg).emit("helpeeStatus","joined")
     roomio.emit('rooms',rooms)
   })
 
@@ -216,7 +217,8 @@ io.on('connection', function(socket){
       console.log("HELPEE LEFT CHAT FIRST")
       rooms[roomWhereHelpeeLeft].available = true;
       rooms[roomWhereHelpeeLeft].helpeeSocketId = '';
-      roomio.emit('rooms', rooms)
+      roomio.emit('rooms', rooms);
+      socket.broadcast.to(rooms[roomWhereHelpeeLeft].roomId).emit("helpeeStatus","left")
     }
 
     //delete helpee from waitlist if he was there
