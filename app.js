@@ -177,18 +177,18 @@ io.on('connection', function(socket){
 
   /////// DRAWING SOCKETS /////////
   socket.on('startDrawing', function(msg){
-    console.log('new path');
-    socket.broadcast.emit('startDrawing', 'yes');
+    console.log('HELPER IS DRAWING');
+    socket.broadcast.to(msg.roomId).emit('startDrawing', 'yes');
   })
 
   socket.on('drawPoint', function(msg){
-    console.log(msg)
-    socket.broadcast.emit('drawPoint', msg)
+    //console.log(msg)
+    socket.broadcast.to(msg.roomId).emit('drawPoint', {"x":msg.x,"y":msg.y})
   })
 
   socket.on('clearCanvas', function(msg){
-    console.log("clear Canvas");
-    socket.broadcast.emit('clearCanvas', 'yes');
+    console.log("HELPER CLEARED CANVAS");
+    socket.broadcast.to(msg.roomId).emit('clearCanvas', 'yes');
   })
 
 

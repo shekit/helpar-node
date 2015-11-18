@@ -29,7 +29,8 @@ $(document).ready(function(){
 		]}
 	});
 
-	var helperId = null;
+	//global to work in paper js script
+	helperId = null;
 	
 	peer.on('open', function(id){
 		helperId = id;
@@ -77,7 +78,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		context.clearRect(0,0,canvas.width, canvas.height);
 		// clear canvas of helpee as well
-		socket.emit('clearCanvas', 'yes');
+		socket.emit('clearCanvas', {"roomId":helperId});
 	})
 
 	peer.on('call', function(incomingCall){

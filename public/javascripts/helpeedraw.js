@@ -12,14 +12,14 @@ socket.on('startDrawing', function(msg){
 		myPath = new Path();
 		myPath.strokeColor = 'red';
 		myPath.strokeWidth = '5';
-		console.log('start path')
+		console.log('HELPER IS DRAWING FOR YOU')
 	}
 })
 
 socket.on('drawPoint',function(msg){
 	var point = new Point(msg.x, msg.y)
 	//myPath.add(msg)
-	console.log(msg)
+	//console.log(msg)
 	myPath.add(point);
 	view.draw();
 })

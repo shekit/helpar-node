@@ -5,7 +5,7 @@ var context = canvas.getContext('2d');
 
 function onMouseDown(event){
 	if(canDraw){
-		socket.emit('startDrawing','yes');
+		socket.emit('startDrawing',{"roomId":helperId});
 		if(myPath){
 			myPath.remove();
 		}
@@ -29,11 +29,12 @@ function onMouseDrag(event){
 }
 
 function onMouseUp(event){
-	console.log('ended')
+	console.log('DREW SOMETHING')
 }
 
 function emitPoint(x,y){
 	var data = {
+		"roomId":helperId,
 		x:x,
 		y:y
 	}

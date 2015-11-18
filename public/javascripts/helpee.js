@@ -28,7 +28,8 @@ $(document).ready(function(){
 
 	var helpeeId = null;
 
-	var helperId = null;
+	//global to work in paper js script
+	helperId = null;
 
 	// peer js config
 	var peer = new Peer({
