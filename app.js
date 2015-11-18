@@ -81,7 +81,8 @@ io.on('connection', function(socket){
        "available":true,
        "socketId":socket.id,
        "helpeeSocketId":'',
-       "members":1
+       "width":0,
+       "height":0
     }
 
     rooms.push(roomDetails);
@@ -106,6 +107,8 @@ io.on('connection', function(socket){
         if(rooms[i].available){
           helperToConnectTo = rooms[i].roomId
           rooms[i].available = false;
+          rooms[i].width = msg.width;
+          rooms[i].height = msg.height;
           break;
         }
       }
@@ -117,9 +120,9 @@ io.on('connection', function(socket){
       io.to(helpeeSocketId).emit('helperStatus',{"available":"yes","id":helperToConnectTo})
 
     } else {
-      console.log("no helper")
-      // add helpee to wait list
-      helpeeWaitlist.push(helpeeSocketId)
+      console.log("NO HELPER, ADDING TO WAITLIST")
+      // add helpee details to wait list
+      helpeeWaitlist.push({"id":helpeeSocketId,"width":msg.width,"height":msg.height})
       io.to(helpeeSocketId).emit('helperStatus',{"available":"no","id":"no helper for you yet"})
     }
 
@@ -132,9 +135,11 @@ io.on('connection', function(socket){
     var roomIndex = findRoom(msg, "roomId")
     socket.join(msg)
     rooms[roomIndex].available = false;
+    // add to room so can mark room as available when helpee leaves
     rooms[roomIndex].helpeeSocketId = socket.id
     console.log("ROOM IS NOW FULL")
-    socket.broadcast.to(msg).emit("helpeeStatus","joined")
+    // communicate resolution to helper
+    socket.broadcast.to(msg).emit("helpeeStatus",{"status":"joined","width":rooms[roomIndex].width,"height":rooms[roomIndex].height})
     roomio.emit('rooms',rooms)
   })
 
@@ -198,8 +203,6 @@ io.on('connection', function(socket){
     
 
     // delete room from array when helper leaves
-    
-
     if(roomId){
       if(rooms[roomId].helpeeSocketId){
         io.to(rooms[roomId].helpeeSocketId).emit("helperLeft","yes");
@@ -217,8 +220,10 @@ io.on('connection', function(socket){
       console.log("HELPEE LEFT CHAT FIRST")
       rooms[roomWhereHelpeeLeft].available = true;
       rooms[roomWhereHelpeeLeft].helpeeSocketId = '';
+      rooms[roomWhereHelpeeLeft].width = 0;
+      rooms[roomWhereHelpeeLeft].height = 0;
       roomio.emit('rooms', rooms);
-      socket.broadcast.to(rooms[roomWhereHelpeeLeft].roomId).emit("helpeeStatus","left")
+      socket.broadcast.to(rooms[roomWhereHelpeeLeft].roomId).emit("helpeeStatus",{"status":"left"})
     }
 
     //delete helpee from waitlist if he was there

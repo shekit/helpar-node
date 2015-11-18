@@ -48,8 +48,6 @@ $(document).ready(function(){
 	peer.on('open', function(id){
 		helpeeId = id;
 		console.log("Helpee ID: "+helpeeId)
-		console.log("SEND HELPEE ID TO SERVER")
-		socket.emit('helpeeConnected',{"online":"yes","id":id})
 		//socket.emit("helpeeId",id)
 	})
 
@@ -110,6 +108,9 @@ $(document).ready(function(){
 			context.canvas.height = resolution.height;
 			context.canvas.width = resolution.width;
 			console.log("SET CANVAS TO VIDEO SIZE")
+
+			console.log("SEND HELPEE DETAILS TO SERVER")
+			socket.emit('helpeeConnected',{"online":"yes","id":helpeeId,"width":resolution.width,"height":resolution.height})
 		}
 	})
 	.catch(function(err){

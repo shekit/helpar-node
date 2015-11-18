@@ -46,20 +46,14 @@ $(document).ready(function(){
 	})
 
 	// when helpee comes online
-	socket.on('helpeeOnline', function(msg){
-		console.log('helpee is here');
-		if(msg == 'yes'){
-			$(".helpeeOnline").text('Helpee is online');
-		}
-	})
-
 	socket.on('helpeeStatus', function(msg){
-		if(msg=='joined'){
-			console.log("HELPEE IS HERE")
-		} else if(msg=='left'){
+		if(msg.status=='joined'){
+			console.log("HELPEE IS HERE, GOT RESOLUTION")
+			console.log("WIDTH: "+msg.width)
+			console.log("HEIGHT: "+msg.height)
+		} else if(msg.status=='left'){
 			console.log("HELPEE LEFT CHAT")
 		}
-		
 	})
 
 	// set video and canvas size based on helpee's resolution

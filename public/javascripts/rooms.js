@@ -7,6 +7,9 @@ $(document).ready(function(){
 		for (var i in msg){
 			console.log("ROOM "+i+": "+msg[i].roomId)
 			console.log("AVAILABILITY: "+msg[i].available)
+			console.log("WIDTH: "+msg[i].width)
+			console.log("HEIGHT: "+msg[i].height)
+			
 		}
 	})
 
