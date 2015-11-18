@@ -107,6 +107,12 @@ io.on('connection', function(socket){
     
   })
 
+  
+  socket.on("helperAvailableAgain", function(msg){
+    console.log("CHECKING IF THERE IS A WAITING HELPEE")
+    checkWaitlist(msg.roomId);
+  })
+
   // when helpee connects
   socket.on('helpeeConnected', function(msg){
     console.log("HELPEE CONNECTED")
@@ -257,6 +263,20 @@ function findRoom(id,param){
     console.log(err)
   }
   return null
+}
+
+// check if there is a waiting helpee
+function checkWaitlist(roomId){
+  var room = findRoom(roomId, "roomId")
+  if(helpeeWaitlist.length>0 && room){
+    console.log("FOUND A WAITING HELPEE AFTER BECOMING FREE");
+    var waitingHelpee = helpeeWaitlist.shift()
+    room.width = waitingHelpee.width;
+    room.height = waitingHelpee.height;
+    io.to(waitingHelpee.id).emit('helperStatus',{"available":"yes","id":room.roomId})
+  } else {
+    return
+  }
 }
 
 // socket namespace to track active rooms

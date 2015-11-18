@@ -54,6 +54,8 @@ $(document).ready(function(){
 			console.log("HEIGHT: "+msg.height)
 		} else if(msg.status=='left'){
 			console.log("HELPEE LEFT CHAT")
+			// tell possible waiting helpees you are available
+			socket.emit("helperAvailableAgain",{"roomId":helperId})
 		}
 	})
 
