@@ -9,12 +9,16 @@ $(document).ready(function(){
 			console.log("AVAILABILITY: "+msg[i].available)
 			console.log("WIDTH: "+msg[i].width)
 			console.log("HEIGHT: "+msg[i].height)
-			
+
 		}
 	})
 
 	roomSocket.on('noHelpers', function(msg){
 		console.log("All helpers are gone!!!")
+	})
+
+	roomSocket.on('helpeeWaiting', function(msg){
+		console.log("HELPEE IS HERE. NO HELPER ONLINE")
 	})
 
 })

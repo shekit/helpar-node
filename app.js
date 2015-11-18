@@ -85,15 +85,26 @@ io.on('connection', function(socket){
        "height":0
     }
 
+    // helper creates and joins room with same id
+    socket.join(msg.roomId);
+
+    // if a helpee is waiting
+    if(helpeeWaitlist.length>0){
+      console.log("FOUND A WAITING HELPEE");
+      var waitingHelpee = helpeeWaitlist.shift()
+      roomDetails.width = waitingHelpee.width;
+      roomDetails.height = waitingHelpee.height;
+      io.to(waitingHelpee.id).emit('helperStatus',{"available":"yes","id":msg.roomId})
+    }
+
     rooms.push(roomDetails);
     console.log("CREATED ROOM");
 
-    // helper creates and joins room with same id
-    socket.join(msg.roomId);
-    console.log("ROOMS COUNT: "+rooms.length)
+    console.log("NOTIFY ROOMS");
+    roomio.emit('rooms',rooms);
 
-    console.log("NOTIFY ROOMS")
-    roomio.emit('rooms',rooms)
+    console.log("ROOMS COUNT: "+rooms.length)
+    
   })
 
   // when helpee connects
@@ -124,6 +135,7 @@ io.on('connection', function(socket){
       // add helpee details to wait list
       helpeeWaitlist.push({"id":helpeeSocketId,"width":msg.width,"height":msg.height})
       io.to(helpeeSocketId).emit('helperStatus',{"available":"no","id":"no helper for you yet"})
+      roomio.emit("helpeeWaiting","yes");
     }
 
     console.log("WAILIST COUNT: "+helpeeWaitlist.length)
@@ -226,10 +238,11 @@ io.on('connection', function(socket){
       socket.broadcast.to(rooms[roomWhereHelpeeLeft].roomId).emit("helpeeStatus",{"status":"left"})
     }
 
-    //delete helpee from waitlist if he was there
+    //delete helpee from waiting list if helpee leaves before a helper joins
+
     try{
       for(var j in helpeeWaitlist){
-        if(helpeeWaitlist[j] == id){
+        if(helpeeWaitlist[j].id == id){
           helpeeWaitlist.splice(j,1)
           break;
         }
