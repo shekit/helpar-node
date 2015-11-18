@@ -3,7 +3,6 @@ $(document).ready(function(){
 	socket = io();
 	console.log('HELPEE CONNECTED')
 	//tell helper when you are online
-	//socket.emit('helpeeOnline', 'yes')
 	$("#helperOnline").hide();
 
 
@@ -121,9 +120,10 @@ $(document).ready(function(){
 	//call helper
 	$("body").on('click',"#makeCall", function(event){
 		event.preventDefault();
-		socket.emit('calling', 'yes');
+		//socket.emit('calling', 'yes');
+		socket.emit('calling',{"roomId":helperId})
 		//communicate resolution
-		socket.emit('resolution', resolution);
+		//socket.emit('resolution', resolution);
 		$(".calling").css({'display':'block'})
 
 		//call helper providing helpee stream from getusermedia
@@ -146,6 +146,7 @@ $(document).ready(function(){
 
 	// if helper answers show connecting text
 	socket.on('answered', function(msg){
+		console.log("HELPER ANSWERED YOUR CALL")
 		if(msg == 'yes'){
 			$(".calling").text('Connecting...')
 			setTimeout(function(){
@@ -162,6 +163,7 @@ $(document).ready(function(){
 
 	// end call initiated by HELPER
 	socket.on('endFromHelper', function(msg){
+		console.log("HELPER ENDED THE CALL")
 		if(msg=='yes'){
 			endCall();
 		}
@@ -169,6 +171,7 @@ $(document).ready(function(){
 
 	// end call initiated by HELPEE
 	$("#endCall").on('click', function(event){
+		console.log("YOU ENDED THE CALL")
 		event.preventDefault();
 		endCall()
 	})

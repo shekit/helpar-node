@@ -39,7 +39,7 @@ $(document).ready(function(){
 	})
 
 	socket.on('calling', function(msg){
-		console.log(msg);
+		console.log("INCOMING CALL FROM HELPEE")
 		if(msg == 'yes'){
 			$(".getCall").css({'display':'block'});
 		}
@@ -68,7 +68,7 @@ $(document).ready(function(){
 
 	$("#decline").on('click', function(event){
 		event.preventDefault();
-		socket.emit('endFromHelper', 'yes');
+		socket.emit('endFromHelper', {"roomId":helperId});
 		$(".helpeeOnline").text('Helpee is online');
 		$("video").hide()
 	})
@@ -84,7 +84,7 @@ $(document).ready(function(){
 		window.currentHelperCall = incomingCall;
 		$("#answer").on('click', function(){
 			incomingCall.answer(window.helperAudioStream);
-			socket.emit('answered','yes');
+			socket.emit('answered',{"roomId":helperId});
 			canDraw = true;
 		})
 		

@@ -70,7 +70,7 @@ io.on('connection', function(socket){
   console.log('a user connected');
   console.log("SOCKET ID: "+socket.id)
 
-
+  ////// CONNECTION SOCKETS ///////
   // when helper connects
   socket.on("helperConnected", function(msg){
     console.log("HELPER CONNECTED");
@@ -155,44 +155,27 @@ io.on('connection', function(socket){
     roomio.emit('rooms',rooms)
   })
 
+  /////// CALLING SOCKETS ////////
   socket.on('calling', function(msg){
-    console.log("Received from helpee:" + msg)
-    socket.broadcast.emit('calling',msg)
+    console.log("HELPEE IS CALLING")
+    console.log("ROOM TO CONNECT TO: "+msg.roomId)
+    socket.broadcast.to(msg.roomId).emit('calling','yes')
+    console.log("NOTIFIED HELPER IN ROOM OF CALL")
   });
 
-  socket.on('resolution', function(msg){
-    console.log("Resolution: ", msg);
-    socket.broadcast.emit('resolution', msg)
-  })
 
   socket.on('answered', function(msg){
-    console.log("Helper answered the call")
-    if(msg == 'yes'){
-      socket.broadcast.emit('answered', 'yes')
-    }
+    console.log("HELPER ANSWERED CALL")
+    socket.broadcast.to(msg.roomId).emit('answered', 'yes')
   })
 
   socket.on('endFromHelper', function(msg){
-    console.log('Helper said to end the call');
-    if(msg == 'yes'){
-      socket.broadcast.emit('endFromHelper', 'yes')
-    }
+    console.log('HELPER IS ENDING THE CALL');
+    socket.broadcast.to(msg.roomId).emit('endFromHelper','yes')
   })
 
-  socket.on('helpeeOnline', function(msg){
-    console.log('Helpee is online');
-    if(msg == 'yes'){
-      socket.broadcast.emit('helpeeOnline','yes')
-    }
-  })
 
-  socket.on('helperOnline', function(msg){
-    console.log('Helper is online');
-    if(msg == 'yes'){
-      socket.broadcast.emit('helperOnline','yes')
-    }
-  })
-
+  /////// DRAWING SOCKETS /////////
   socket.on('startDrawing', function(msg){
     console.log('new path');
     socket.broadcast.emit('startDrawing', 'yes');
@@ -208,6 +191,8 @@ io.on('connection', function(socket){
     socket.broadcast.emit('clearCanvas', 'yes');
   })
 
+
+  ////// DISCONNECTION  //////
   socket.on('disconnect', function(){
     console.log('a user disconnected')
     console.log(socket.id)
