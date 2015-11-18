@@ -109,7 +109,7 @@ io.on('connection', function(socket){
 
   
   socket.on("helperAvailableAgain", function(msg){
-    console.log("CHECKING IF THERE IS A WAITING HELPEE")
+    console.log("HELPER JST BECAME AVAILABLE. CHECKING FOR WAITING HELPEE")
     checkWaitlist(msg.roomId);
   })
 

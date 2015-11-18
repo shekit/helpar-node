@@ -47,8 +47,40 @@ $(document).ready(function(){
 	// on connecting to peerjs
 	peer.on('open', function(id){
 		helpeeId = id;
-		console.log("Helpee ID: "+helpeeId)
+		console.log("GOT HELPEE ID");
+		console.log("HELPEE ID: "+helpeeId)
 		//socket.emit("helpeeId",id)
+	})
+
+	peer.on('disconnected', function(){
+		console.log("YOU HAVE BEEN DISCONNECTED")
+		console.log("ATTEMPTING TO RECONNECT")
+		//peer.reconnect();
+	})
+
+	peer.on('error', function(err){
+		console.log("ERROR: "+err.type);
+		
+		switch(err.type){
+			case "browser-incompatible":
+				alert("WebRTC not supported. Your browser is old. Switch to google chrome");
+				break;
+			case "network":
+				alert("Connectivity problems. Check internet connection")
+				break
+			case "peer-unavailable":
+				alert("The person you are trying to connect to doesnt exist")
+				break;
+			case "ssl-unavailable":
+				alert("SSL not supported on your server")
+				break;
+			case "server-error":
+				alert("Unable to reach server")
+				break;
+			default:
+				alert(err.type)
+				break;
+		}
 	})
 
 	socket.on('helperStatus', function(msg){
@@ -135,12 +167,17 @@ $(document).ready(function(){
 		// on receiving audio from helper add it to audio element
 		outgoingCall.on('stream', function(remoteHelperStream){
 			window.remoteHelperStream = remoteHelperStream
+			console.log("HELPER PEER ID: "+outgoingCall.id);
 			var audio = $("#remoteAudio");
 			audio.attr({'src':URL.createObjectURL(remoteHelperStream)});
 			// show end call button
 			$("#makeCall").fadeOut();
 			$("#endCall").fadeIn()
 			console.log("CONNECTED TO HELPER");
+		})
+
+		outgoingCall.on('error', function(){
+			console.log("ERROR CONNECTING")
 		})
 
 	})

@@ -38,6 +38,37 @@ $(document).ready(function(){
 		console.log("SEND HELPER DETAILS TO SERVER")
 		socket.emit("helperConnected", {"online":"yes","id":id,"roomId":id})
 	})
+	
+	peer.on('disconnected', function(){
+		console.log("YOU HAVE BEEN DISCONNECTED")
+		console.log("ATTEMPTING TO RECONNECT")
+		//peer.reconnect();
+	})
+
+	peer.on('error', function(err){
+		console.log("ERROR: "+err.type);
+		
+		switch(err.type){
+			case "browser-incompatible":
+				alert("WebRTC not supported. Your browser is old. Switch to google chrome");
+				break;
+			case "network":
+				alert("Connectivity problems. Check internet connection")
+				break
+			case "peer-unavailable":
+				alert("The person you are trying to connect to doesnt exist")
+				break;
+			case "ssl-unavailable":
+				alert("SSL not supported on your server")
+				break;
+			case "server-error":
+				alert("Unable to reach server")
+				break;
+			default:
+				alert(err.type)
+				break;
+		}
+	})
 
 	socket.on('calling', function(msg){
 		console.log("INCOMING CALL FROM HELPEE")
@@ -54,6 +85,8 @@ $(document).ready(function(){
 			console.log("HEIGHT: "+msg.height)
 		} else if(msg.status=='left'){
 			console.log("HELPEE LEFT CHAT")
+			console.log("END THE CALL")
+			window.currentHelperCall.close();
 			// tell possible waiting helpees you are available
 			socket.emit("helperAvailableAgain",{"roomId":helperId})
 		}
@@ -72,6 +105,7 @@ $(document).ready(function(){
 	$("#decline").on('click', function(event){
 		event.preventDefault();
 		socket.emit('endFromHelper', {"roomId":helperId});
+		window.currentHelperCall.close();
 		$(".helpeeOnline").text('Helpee is online');
 		$("video").hide()
 	})
@@ -85,6 +119,8 @@ $(document).ready(function(){
 
 	peer.on('call', function(incomingCall){
 		window.currentHelperCall = incomingCall;
+
+		console.log("HELPEE PEER ID: "+incomingCall.peer)
 		$("#answer").on('click', function(){
 			incomingCall.answer(window.helperAudioStream);
 			socket.emit('answered',{"roomId":helperId});
@@ -96,6 +132,11 @@ $(document).ready(function(){
 			video.attr({'src':URL.createObjectURL(remoteHelpeeStream)});
 
 			console.log("VIDEO RES: ", video.innerWidth(), video.innerHeight())
+		})
+
+		incomingCall.on('error', function(err){
+			console.log("ERROR GETTING HELPEE STREAM")
+			console.log(err);
 		})
 	})
 
