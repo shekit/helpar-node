@@ -25,7 +25,7 @@ $(document).ready(function(){
 		debug: 3,
 		config: {'iceServers':[
 			{url: 'stun:stun.1.google.com:19302'},
-			{url: 'stun:stun1.1.google.com:19302'}
+			{url: 'stun:stun1.1.google.com:19302'} // place turn server here
 		]}
 	});
 
@@ -38,7 +38,7 @@ $(document).ready(function(){
 		console.log("SEND HELPER DETAILS TO SERVER")
 		socket.emit("helperConnected", {"online":"yes","id":id,"roomId":id})
 	})
-	
+
 	peer.on('disconnected', function(){
 		console.log("YOU HAVE BEEN DISCONNECTED")
 		console.log("ATTEMPTING TO RECONNECT")
@@ -107,7 +107,7 @@ $(document).ready(function(){
 		socket.emit('endFromHelper', {"roomId":helperId});
 		window.currentHelperCall.close();
 		$(".helpeeOnline").text('Helpee is online');
-		$("video").hide()
+		//$("video").hide()
 	})
 
 	$("#clearCanvas").on('click', function(event){

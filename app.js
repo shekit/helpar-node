@@ -151,6 +151,8 @@ io.on('connection', function(socket){
   socket.on('joinRoom', function(msg){
     console.log("HELPEE JOINED ROOM")
     var roomIndex = findRoom(msg, "roomId")
+ 
+    console.log("ROOM INDEX: "+roomIndex)
     socket.join(msg)
     rooms[roomIndex].available = false;
     // add to room so can mark room as available when helpee leaves
@@ -233,7 +235,7 @@ io.on('connection', function(socket){
 
     try{
       for(var j in helpeeWaitlist){
-        if(helpeeWaitlist[j].id == id){
+        if(helpeeWaitlist[j].id == socket.id){
           helpeeWaitlist.splice(j,1)
           break;
         }
@@ -266,14 +268,14 @@ function findRoom(id,param){
 }
 
 // check if there is a waiting helpee
-function checkWaitlist(roomId){
-  var room = findRoom(roomId, "roomId")
-  if(helpeeWaitlist.length>0 && room){
+function checkWaitlist(searchId){
+  var roomIndex = findRoom(searchId, "roomId")
+  if(helpeeWaitlist.length>0 && roomIndex){
     console.log("FOUND A WAITING HELPEE AFTER BECOMING FREE");
     var waitingHelpee = helpeeWaitlist.shift()
-    room.width = waitingHelpee.width;
-    room.height = waitingHelpee.height;
-    io.to(waitingHelpee.id).emit('helperStatus',{"available":"yes","id":room.roomId})
+    rooms[roomIndex].width = waitingHelpee.width;
+    rooms[roomIndex].height = waitingHelpee.height;
+    io.to(waitingHelpee.id).emit('helperStatus',{"available":"yes","id":rooms[roomIndex].roomId})
   } else {
     return
   }
@@ -282,7 +284,7 @@ function checkWaitlist(roomId){
 // socket namespace to track active rooms
 var roomio = io.of('/rooms');
 roomio.on('connection', function(socket){
-  console.log("a user room connected")
+  console.log("ROOM IS ONLINE")
 });
 
 

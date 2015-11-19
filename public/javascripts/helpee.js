@@ -40,7 +40,7 @@ $(document).ready(function(){
 		debug: 3,
 		config: {'iceServers':[
 			{url: 'stun:stun.1.google.com:19302'},
-			{url: 'stun:stun1.1.google.com:19302'}
+			{url: 'stun:stun1.1.google.com:19302'}  // place turn server here
 		]}
 	});
 
@@ -54,7 +54,7 @@ $(document).ready(function(){
 
 	peer.on('disconnected', function(){
 		console.log("YOU HAVE BEEN DISCONNECTED")
-		console.log("ATTEMPTING TO RECONNECT")
+		console.log("MAKE ATTEMPT TO RECONNECT")
 		//peer.reconnect();
 	})
 
@@ -87,7 +87,7 @@ $(document).ready(function(){
 		if(msg.available == 'yes'){
 			console.log("You have a helper, assign it to peer id and show call button")
 			helperId = msg.id
-			socket.emit('joinRoom',helperId)
+			socket.emit('joinRoom',msg.id)
 		} else {
 			console.log("No helper yet. Wait for someone")
 		}
