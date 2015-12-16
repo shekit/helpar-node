@@ -115,6 +115,7 @@ $(document).ready(function(){
 
 	var constraints = {audio:true, video:true}
 
+	//replace with older
 	navigator.mediaDevices.getUserMedia(constraints)
 	.then(function(stream){
 		var video = document.querySelector('video');
