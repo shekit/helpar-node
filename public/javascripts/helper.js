@@ -141,29 +141,38 @@ $(document).ready(function(){
 	})
 
 	// get audio feed
-	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
-   		getUserMedia: function(c) {
-     		return new Promise(function(y, n) {
-       			(navigator.mozGetUserMedia ||
-        		navigator.webkitGetUserMedia).call(navigator, c, y, n);
-     		});
-   		}
-	} : null);
+	// navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
+ //   		getUserMedia: function(c) {
+ //     		return new Promise(function(y, n) {
+ //       			(navigator.mozGetUserMedia ||
+ //        		navigator.webkitGetUserMedia).call(navigator, c, y, n);
+ //     		});
+ //   		}
+	// } : null);
 
-	if (!navigator.mediaDevices) {
-	  console.log("getUserMedia() not supported.");
-	  return;
-	}
+	// if (!navigator.mediaDevices) {
+	//   console.log("getUserMedia() not supported.");
+	//   return;
+	// }
+
+	navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
 
 	//only grab audio as helper doesnt need to see himself
 	var constraints = {audio:true, video:false}
 
-	navigator.mediaDevices.getUserMedia(constraints)
-	.then(function(stream){
+	navigator.getUserMedia(constraints, function(stream){
 		window.helperAudioStream = stream
-	})
-	.catch(function(err){
+	}, function(error){
 		console.log(err.name + ": "+err.message)
 	})
+	
+	// navigator.mediaDevices.getUserMedia(constraints)
+	// .then(function(stream){
+	// 	window.helperAudioStream = stream
+	// })
+	// .catch(function(err){
+	// 	console.log(err.name + ": "+err.message)
+	// })
 
 })
