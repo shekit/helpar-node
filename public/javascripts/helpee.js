@@ -129,7 +129,7 @@ $(document).ready(function(){
 
 	$("video").on("loadedmetadata", function(){
 		console.log("GOT VIDEO")
-			var video = $(this);
+			var video = document.querySelector('video');
 			video.play();
 			// show call button
 		 	$("#makeCall").fadeIn();
