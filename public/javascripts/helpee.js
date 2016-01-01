@@ -99,31 +99,37 @@ $(document).ready(function(){
 	})
 	
 	// get camera feed
-	navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
-   		getUserMedia: function(c) {
-     		return new Promise(function(y, n) {
-       			(navigator.mozGetUserMedia ||
-        		navigator.webkitGetUserMedia).call(navigator, c, y, n);
-     		});
-   		}
-	} : null);
+	// navigator.mediaDevices = navigator.mediaDevices || ((navigator.mozGetUserMedia || navigator.webkitGetUserMedia) ? {
+ //   		getUserMedia: function(c) {
+ //     		return new Promise(function(y, n) {
+ //       			(navigator.mozGetUserMedia ||
+ //        		navigator.webkitGetUserMedia).call(navigator, c, y, n);
+ //     		});
+ //   		}
+	// } : null);
 
-	if (!navigator.mediaDevices) {
-	  console.log("getUserMedia() not supported.");
-	  return;
-	}
+	// if (!navigator.mediaDevices) {
+	//   console.log("getUserMedia() not supported.");
+	//   return;
+	// }
+
+	navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
 
 	var constraints = {audio:true, video:true}
 
-	//replace with older
-	navigator.mediaDevices.getUserMedia(constraints)
-	.then(function(stream){
+	navigator.getUserMedia(constraints, function(stream){
 		var video = document.querySelector('video');
 		video.src = window.URL.createObjectURL(stream);
 		window.helpeeStream = stream;
-		video.onloadedmetadata=function(event){
-			console.log("GOT VIDEO")
-			
+	}, function(error){
+		alert("Error accessing your camera. Please reload and allow access.")
+		console.log(error)
+	})
+
+	$("video").on("loadedmetadata", function(){
+		console.log("GOT VIDEO")
+			var video = $(this);
 			video.play();
 			// show call button
 		 	$("#makeCall").fadeIn();
@@ -144,12 +150,43 @@ $(document).ready(function(){
 
 			console.log("SEND HELPEE DETAILS TO SERVER")
 			socket.emit('helpeeConnected',{"online":"yes","id":helpeeId,"width":resolution.width,"height":resolution.height})
-		}
 	})
-	.catch(function(err){
-		console.log("ERROR IN GETTING VIDEO")
-		console.log(err.name + ": " + err.message)
-	})
+
+	//replace with older
+	// navigator.mediaDevices.getUserMedia(constraints)
+	// .then(function(stream){
+	// 	var video = document.querySelector('video');
+	// 	video.src = window.URL.createObjectURL(stream);
+	// 	window.helpeeStream = stream;
+	// 	video.onloadedmetadata=function(event){
+	// 		console.log("GOT VIDEO")
+			
+	// 		video.play();
+	// 		// show call button
+	// 	 	$("#makeCall").fadeIn();
+
+	// 		//set resolution to communicate via socket to receiver so that their video and canvas matches helpees size
+	// 		resolution.width = video.getBoundingClientRect().width 
+	// 		resolution.height = video.getBoundingClientRect().height
+	// 		console.log(resolution)
+
+	// 		//set canvas to match size of video
+	// 		var canvas = $("canvas")
+	// 		canvas.innerHeight(resolution.height);
+	// 		canvas.innerWidth(resolution.width);
+
+	// 		context.canvas.height = resolution.height;
+	// 		context.canvas.width = resolution.width;
+	// 		console.log("SET CANVAS TO VIDEO SIZE")
+
+	// 		console.log("SEND HELPEE DETAILS TO SERVER")
+	// 		socket.emit('helpeeConnected',{"online":"yes","id":helpeeId,"width":resolution.width,"height":resolution.height})
+	// 	}
+	// })
+	// .catch(function(err){
+	// 	console.log("ERROR IN GETTING VIDEO")
+	// 	console.log(err.name + ": " + err.message)
+	// })
 
 	//call helper
 	$("body").on('click',"#makeCall", function(event){
